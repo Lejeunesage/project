@@ -1,8 +1,11 @@
 <?php
 
 @include 'config.php';
+use App\Controllers\Connexion;
 
-session_start();
+$connexion = new Connexion ;
+$conn = $connexion->connect();
+
 
 if(isset($_SESSION['user_id'])){
    $user_id = $_SESSION['user_id'];

@@ -35,21 +35,15 @@ class RouteController extends \Core\Controller {
         View::render("checkout.php");
     }
 
-    public function conctactAction() {
+    public function ordersAction() {
     
-        View::render("contact.php");
+        View::render("orders.php");
     }
 
     public function shopAction() {
     
         View::render("shop.php");
     }
-
-    public function ordersAction() {
-    
-        View::render("orders.php");
-    }
-
 
     public function cardAction() {
     
@@ -64,6 +58,15 @@ class RouteController extends \Core\Controller {
     public function registerAction() {
     
         View::render("register.php");
+    }
+
+    public function logoutAction() {
+
+        session_start();
+        session_unset();
+        session_destroy();
+
+        View::render("home.php");
     }
     
     public function searchAction() {

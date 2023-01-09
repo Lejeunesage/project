@@ -31,13 +31,20 @@ class LoginController {
            $pass = password_verify($this->pass, $result[0]["password"]);
 
            if($pass === true & $result[0]["user_type"] === "admin") {
+            //    session_start();
+                $_SESSION['admin_id'] = $result[0]['id'];
+                $connexion = ProfileController::getUser();
                header("Location:admin/home?msg=dashboard_admin");
                exit();
             } 
 
             elseif($pass === true & $result[0]["user_type"] !== "admin") {
+                $connexion = ProfileController::getUser();
+
+            
+              
                 // View::render("home.php");
-                header("Location:/route/home");
+                header("Location:/");
                 exit();
             }
 
@@ -49,13 +56,14 @@ class LoginController {
                 //         'email'=> $this->email,
                 //     ]
                 // ]);
+                $message= 'password_error';
                
-               header("Location:/route/login?&email=$this->email");
+               header("Location:/login");
                exit();
            }
         } 
         else {
-            header("Location:/route/login?msg=user_not_found&email=$this->email");
+            header("Location:/login?msg=user_not_found&email=$this->email");
             exit();
         }
     }
@@ -67,6 +75,10 @@ class LoginController {
         if($_SERVER["REQUEST_METHOD"] === "POST" & isset($_POST["submit"])) {
             $email = $_POST["email"];
             $pass = $_POST["pass"];
+
+            session_start();
+            $_SESSION ['user_email']= $email;
+
 
             $this->email = $email;
             $this->pass = $pass;

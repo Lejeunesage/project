@@ -1,89 +1,50 @@
 <?php
 
-@include 'config.php';
-
-session_start();
-
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
-};
+// @include 'config.php';
+use App\Controllers\Connexion;
+use App\Controllers\ProductController;
+use App\Controllers\CardController;
 
 
-if(isset($_POST['add_to_wishlist'])){
 
-   $user_id = $_SESSION['user_id'];
-   if(!isset($user_id)){
-         header('location:/login');
-      }
 
-   $pid = $_POST['pid'];
-   $pid = htmlspecialchars($pid);
-   $p_name = $_POST['p_name'];
-   $p_name = htmlspecialchars($p_name);
-   $p_price = $_POST['p_price'];
-   $p_price = htmlspecialchars($p_price);
-   $p_image = $_POST['p_image'];
-   $p_image = htmlspecialchars($p_image);
 
-   $check_wishlist_numbers = $conn->prepare("SELECT * FROM `wishlist` WHERE name = ? AND user_id = ?");
-   $check_wishlist_numbers->execute([$p_name, $user_id]);
 
-   $check_cart_numbers = $conn->prepare("SELECT * FROM `cart` WHERE name = ? AND user_id = ?");
-   $check_cart_numbers->execute([$p_name, $user_id]);
 
-   if($check_wishlist_numbers->rowCount() > 0){
-      $message[] = "Déjà ajouté à la liste d'envie !";
-   }elseif($check_cart_numbers->rowCount() > 0){
-      $message[] = 'Déjà ajouté au panier !';
-   }else{
-      $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(user_id, pid, name, price, image) VALUES(?,?,?,?,?)");
-      $insert_wishlist->execute([$user_id, $pid, $p_name, $p_price, $p_image]);
-      $message[] = 'Ajouté à la liste d\'envie !';
-   }
+// if(isset($_POST['add_to_wishlist'])){
 
-}
+//    $user_id = $_SESSION['user_id'];
+//    if(!isset($user_id)){
+//          header('location:/login');
+//       }
 
-if(isset($_POST['add_to_cart'])){
+//    $pid = $_POST['pid'];
+//    $pid = htmlspecialchars($pid);
+//    $p_name = $_POST['p_name'];
+//    $p_name = htmlspecialchars($p_name);
+//    $p_price = $_POST['p_price'];
+//    $p_price = htmlspecialchars($p_price);
+//    $p_image = $_POST['p_image'];
+//    $p_image = htmlspecialchars($p_image);
 
-   $user_id = $_SESSION['user_id'];
-   if(!isset($user_id)){
-         header('location:/login');
-      }
+//    $check_wishlist_numbers = $conn->prepare("SELECT * FROM `wishlist` WHERE name = ? AND user_id = ?");
+//    $check_wishlist_numbers->execute([$p_name, $user_id]);
 
-   $pid = $_POST['pid'];
-   $pid = htmlspecialchars($pid);
-   $p_name = $_POST['p_name'];
-   $p_name = htmlspecialchars($p_name);
-   $p_price = $_POST['p_price'];
-   $p_price = htmlspecialchars($p_price);
-   $p_image = $_POST['p_image'];
-   $p_image = htmlspecialchars($p_image);
-   $p_qty = $_POST['p_qty'];
-   $p_qty = htmlspecialchars($p_qty);
+//    $check_cart_numbers = $conn->prepare("SELECT * FROM `cart` WHERE name = ? AND user_id = ?");
+//    $check_cart_numbers->execute([$p_name, $user_id]);
 
-   $check_cart_numbers = $conn->prepare("SELECT * FROM `cart` WHERE name = ? AND user_id = ?");
-   $check_cart_numbers->execute([$p_name, $user_id]);
+//    if($check_wishlist_numbers->rowCount() > 0){
+//       $message[] = "Déjà ajouté à la liste d'envie !";
+//    }elseif($check_cart_numbers->rowCount() > 0){
+//       $message[] = 'Déjà ajouté au panier !';
+//    }else{
+//       $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(user_id, pid, name, price, image) VALUES(?,?,?,?,?)");
+//       $insert_wishlist->execute([$user_id, $pid, $p_name, $p_price, $p_image]);
+//       $message[] = 'Ajouté à la liste d\'envie !';
+//    }
 
-   if($check_cart_numbers->rowCount() > 0){
-      $message[] = 'Déjà ajouté au panier !';
-   }else{
+// }
 
-      $check_wishlist_numbers = $conn->prepare("SELECT * FROM `wishlist` WHERE name = ? AND user_id = ?");
-      $check_wishlist_numbers->execute([$p_name, $user_id]);
-
-      if($check_wishlist_numbers->rowCount() > 0){
-         $delete_wishlist = $conn->prepare("DELETE FROM `wishlist` WHERE name = ? AND user_id = ?");
-         $delete_wishlist->execute([$p_name, $user_id]);
-      }
-
-      $insert_cart = $conn->prepare("INSERT INTO `cart`(user_id, pid, name, price, quantity, image) VALUES(?,?,?,?,?,?)");
-      $insert_cart->execute([$user_id, $pid, $p_name, $p_price, $p_qty, $p_image]);
-      $message[] = 'Ajouté au panier !';
-   }
-
-}
 
 ?>
 
@@ -221,30 +182,33 @@ if(isset($_POST['add_to_cart'])){
    <div class="box-container">
 
    <?php
-      $select_products = $conn->prepare("SELECT * FROM `products` LIMIT 6");
-      $select_products->execute();
-      if($select_products->rowCount() > 0){
-         while($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)){ 
+      $fetch_products = ProductController::getProduct();
+
+      if (isset($fetch_products)) {
+         foreach ($fetch_products as $key => $value) {
+            
    ?>
-   <form action="" class="box" method="POST">
-      <div class="price"><span><?= $fetch_products['price']; ?></span>€</div>
-      <a href="/views?pid=<?= $fetch_products['id']; ?>" class="fas fa-eye"></a>
-      <img src="../ressources/uploaded_img/<?= $fetch_products['image']; ?>" alt="">
-      <div class="name"><?= $fetch_products['name']; ?></div>
-      <input type="hidden" name="pid" value="<?= $fetch_products['id']; ?>">
-      <input type="hidden" name="p_name" value="<?= $fetch_products['name']; ?>">
-      <input type="hidden" name="p_price" value="<?= $fetch_products['price']; ?>">
-      <input type="hidden" name="p_image" value="<?= $fetch_products['image']; ?>">
-      <input type="hidden" type="number" min="1" value="1" name="p_qty" class="qty">
-      <input type="submit" value="Ajouter à la liste d'envie" class="option-btn" name="add_to_wishlist">
-      <input type="submit" value="Ajouter au panier" class="btn" name="add_to_cart">
-   </form>
+      <form action="Card/infoCard" class="box" method="POST">
+         <div class="price"><span><?= $value['price']; ?></span>€</div>
+         <a href="/views?pid=<?= $value['id']; ?>" class="fas fa-eye"></a>
+         <img src="../ressources/uploaded_img/<?= $value['image']; ?>" alt="">
+         <div class="name"><?= $value['name']; ?></div>
+         <input type="hidden" name="pid" value="<?= $value['id']; ?>">
+         <input type="hidden" name="p_name" value="<?= $value['name']; ?>">
+         <input type="hidden" name="p_price" value="<?= $value['price']; ?>">
+         <input type="hidden" name="p_image" value="<?= $value['image']; ?>">
+         <input type="hidden" type="number" min="1" value="1" name="p_qty" class="qty">
+         <input type="submit" value="Ajouter à la liste d'envie" class="option-btn" name="add_to_wishlist">
+         <input type="submit" value="Ajouter au panier" class="btn" name="add_to_cart">
+      </form>
    <?php
       }
-   }else{
-      echo '<p class="empty">Aucun produit ajouté pour le moment !</p>';
-   }
-   ?>
+
+      }else {
+         echo '<p class="empty">Aucun produit ajouté pour le moment !</p>';
+      }
+      
+      ?>
 
    </div>
 

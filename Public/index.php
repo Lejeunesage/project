@@ -31,8 +31,14 @@ $router = new Core\Router();
 
 // Add the routes
 $router->add('', ['controller' => 'Route', 'action' => 'home']);
+$router->add('about', ['controller' => 'Route', 'action' => 'about']);
+$router->add('category', ['controller' => 'Route', 'action' => 'category']);
+$router->add('contact', ['controller' => 'Route', 'action' => 'contact']);
+$router->add('checkout', ['controller' => 'Route', 'action' => 'checkout']);
 $router->add('login', ['controller' => 'Route', 'action' => 'login']);
 $router->add('register', ['controller' => 'Route', 'action' => 'register']);
+$router->add('logout', ['controller' => 'Route', 'action' => 'logout']);
+$router->add('update', ['controller' => 'Route', 'action' => 'update']);
 
 $router->add('contact', ['controller' => 'ControllersContact', 'action' => 'contact']);
 $router->add('posts/new', ['controller' => 'Posts', 'action' => 'new']);
