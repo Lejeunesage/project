@@ -1,43 +1,9 @@
 <?php
-
-@include 'config.php';
-
+use   App\Controllers\CardController;
 
 
-if(isset($_SESSION['user_id'])){
-   $user_id = $_SESSION['user_id'];
-}else{
-   $user_id = '';
-   header('location:/home');
-}
 
-// $user_id = $_SESSION['user_id'];
 
-// if(!isset($user_id)){
-//    header('location:/login');
-// };
-
-if(isset($_GET['delete'])){
-   $delete_id = $_GET['delete'];
-   $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE id = ?");
-   $delete_cart_item->execute([$delete_id]);
-   header('location:/card');
-}
-
-if(isset($_GET['delete_all'])){
-   $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
-   $delete_cart_item->execute([$user_id]);
-   header('location:/card');
-}
-
-if(isset($_POST['update_qty'])){
-   $cart_id = $_POST['cart_id'];
-   $p_qty = $_POST['p_qty'];
-   $p_qty = htmlspecialchars($p_qty);
-   $update_qty = $conn->prepare("UPDATE `cart` SET quantity = ? WHERE id = ?");
-   $update_qty->execute([$p_qty, $cart_id]);
-   $message[] = 'Quantité du panier mise à jour';
-}
 
 ?>
 
@@ -68,10 +34,12 @@ if(isset($_POST['update_qty'])){
 
    <?php
       $grand_total = 0;
-      $select_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
-      $select_cart->execute([$user_id]);
-      if($select_cart->rowCount() > 0){
-         while($fetch_cart = $select_cart->fetch(PDO::FETCH_ASSOC)){ 
+      $select_cart = CardController::select_cart();
+
+      if(isset($select_cart)){
+         foreach ($select_cart as $key => $value) {
+            # code...
+         
    ?>
    <form action="" method="POST" class="box">
       <a href="/card?delete=<?= $fetch_cart['id']; ?>" 
@@ -80,19 +48,19 @@ if(isset($_POST['update_qty'])){
          <i class="fas fa-times" ></i>
 
    </a>
-      <a href="/views?pid=<?= $fetch_cart['pid']; ?>" >
+      <a href="/views?pid=<?= $value['pid']; ?>" >
       <i class="fas fa-eye" ></i>
 
       </a>
-      <img src="./ressources/uploaded_img/<?= $fetch_cart['image']; ?>" alt="">
-      <div class="name"><?= $fetch_cart['name']; ?></div>
-      <div class="price"><?= $fetch_cart['price']; ?>€</div>
-      <input type="hidden" name="cart_id" value="<?= $fetch_cart['id']; ?>">
+      <img src="./ressources/uploaded_img/<?= $value['image']; ?>" alt="">
+      <div class="name"><?= $value['name']; ?></div>
+      <div class="price"><?= $value['price']; ?>€</div>
+      <input type="hidden" name="cart_id" value="<?= $value['id']; ?>">
       <div class="flex-btn">
-         <input type="number" min="1" value="<?= $fetch_cart['quantity']; ?>" class="qty" name="p_qty">
+         <input type="number" min="1" value="<?= $value['quantity']; ?>" class="qty" name="p_qty">
          <input type="submit" value="Mettre à jour" name="update_qty" class="option-btn">
       </div>
-      <div class="sub-total"> Sous-total : <span><?= $sub_total = ($fetch_cart['price'] * $fetch_cart['quantity']); ?>€</span> </div>
+      <div class="sub-total"> Sous-total : <span><?= $sub_total = ($value['price'] * $value['quantity']); ?>€</span> </div>
    </form>
    <?php
       $grand_total += $sub_total;

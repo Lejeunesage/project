@@ -1,28 +1,27 @@
 <?php
 namespace  App\Controllers;
 use  App\Models\CardModel;
+use  App\Models\WishlistModel;
 
-/**
- * 
- */
+
 class CardController {
 
-    /**
-     * $conn
-     */
-    public $connexion;
-    public $pid;
-    public $p_name;
-    public $p_image;
-    public $p_qty;
+   
 
-
-    public static function infoCard(){
-        session_start();
+    public static function add(){
+        
 
         if(isset($_POST['add_to_cart'])){
 
-            $user_id = $_SESSION['user_id'];
+            session_start();
+
+            if(isset($_SESSION['user_id'])){
+                $user_id = $_SESSION['user_id'];
+             }else{
+                $user_id = '';
+             };
+
+           
             if(!isset($user_id)){
                   header('location:/login');
             }
@@ -33,48 +32,135 @@ class CardController {
             $p_image = htmlspecialchars($_POST['p_image']);
             $p_qty = htmlspecialchars($_POST['p_qty']);
 
+            $addToCard =  new  CardModel(); 
 
-            $_SESSION['pid'] =  $pid;
-            $_SESSION['p_name'] =  $p_name;
-            $_SESSION['p_price'] =  $p_price;
-            $_SESSION['_image'] =  $p_image;
-            $_SESSION['p_qty'] =  $p_qty;
+            $check_cart_numbers = $addToCard->check_cart_numbers($p_name, $user_id);
+            
+            if($check_cart_numbers->rowCount() > 0){
+                $message[] = 'Déjà ajouté au panier !';
 
+                header('location:/');
+            }else{
+                $addToWishlist =  new  WishlistModel();
+                $check_wishlist_numbers = $addToWishlist->check_wishlist_numbers($p_name, $user_id);
+                
+                
+                if($check_wishlist_numbers->rowCount() > 0){
+                    $delete_wishlist = $addToCard->delete_wishlist($p_name, $user_id);
+         
+                }
+
+                $insert = $addToCard->insertCard($user_id, $pid, $p_name, $p_price, $p_qty, $p_image);
+                $message[] = 'Ajouté au panier !';
+
+                header('location:/');
+            }
+        }
+
+
+        if(isset($_POST['add_to_wishlist'])){
+
+            session_start();
+
+            if(isset($_SESSION['user_id'])){
+                $user_id = $_SESSION['user_id'];
+             }else{
+                $user_id = '';
+             };
+
+           
+            if(!isset($user_id)){
+                header('location:/login');
+            }
+         
+            $pid = htmlspecialchars($_POST['pid']);
+            $p_name = htmlspecialchars($_POST['p_name']);
+            $p_price = htmlspecialchars($_POST['p_price']);
+            $p_image = htmlspecialchars($_POST['p_image']);
+            $p_qty = htmlspecialchars($_POST['p_qty']);
+
+            
+            $addToWishlist =  new  WishlistModel();
+            $check_wishlist_numbers = $addToWishlist->check_wishlist_numbers($p_name, $user_id);
+         
+            $addToCard =  new  CardModel(); 
+            $check_cart_numbers = $addToCard->check_cart_numbers($p_name, $user_id);
+         
+            if($check_wishlist_numbers->rowCount() > 0){
+               $message[] = 'Déjà ajouté à la liste de souhaits !';
+            }elseif($check_cart_numbers->rowCount() > 0){
+               $message[] = 'Déjà ajouté au panier !';
+            }else{
+                $insert = $addToWishlist->insertWishlist($user_id, $pid, $p_name, $p_price, $p_qty, $p_image);
+                $message[] = 'Ajouté à la liste de souhaits !';
+            }
             header('location:/');
+        }
+        
+    }
+
+
+    public static function count_cart_items(){
+
+        $count_cart_items = CardModel::count_cart_items();
+        
+        return $count_cart_items;
+
+        if ($count_cart_items === false) {
+            return 'Aucune donnée recupérer';
+        }
+
+    }
+    
+    public static function select_cart(){
+
+        $select_cart = CardModel::select_cart();
+        
+        return $select_cart;
+
+        if ($select_cart === false) {
+            return 'Aucune donnée recupérer';
         }
 
     }
 
-
-
-
-   
-
-    public static function addToCard (){
-
-        $addToCard = CardModel::insert_cart();
-        return $addToCard;
-
+    public static function mmm(){
+        // if(isset($_SESSION['user_id'])){
+        //     $user_id = $_SESSION['user_id'];
+        //  }else{
+        //     $user_id = '';
+        //     header('location:/home');
+        //  }
+         
+        //  $user_id = $_SESSION['user_id'];
+         
+        //  if(!isset($user_id)){
+        //     header('location:/login');
+        //  };
+         
+        //  if(isset($_GET['delete'])){
+        //     $delete_id = $_GET['delete'];
+        //     $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE id = ?");
+        //     $delete_cart_item->execute([$delete_id]);
+        //     header('location:/card');
+        //  }
+         
+        //  if(isset($_GET['delete_all'])){
+        //     $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
+        //     $delete_cart_item->execute([$user_id]);
+        //     header('location:/card');
+        //  }
+         
+        //  if(isset($_POST['update_qty'])){
+        //     $cart_id = $_POST['cart_id'];
+        //     $p_qty = $_POST['p_qty'];
+        //     $p_qty = htmlspecialchars($p_qty);
+        //     $update_qty = $conn->prepare("UPDATE `cart` SET quantity = ? WHERE id = ?");
+        //     $update_qty->execute([$p_qty, $cart_id]);
+        //     $message[] = 'Quantité du panier mise à jour';
+        //  }
     }
 
-
-    public function returnAll() {
-       $count= count($this->ray->selectAll());
-       if($count>0) {
-        return $this->ray->selectAll();
-       } else {
-        return false;
-       }
-    }
-
-    public function returnDistinct() {
-       $count= count($this->ray->selectDistinct());
-       if($count>0) {
-        return $this->ray->selectDistinct();
-       } else {
-        return false;
-       }
-    }
 
 }
 

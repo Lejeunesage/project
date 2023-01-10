@@ -1,6 +1,8 @@
 <?php
-session_start();
+// session_start();
   use App\Controllers\Connexion;
+  use App\Controllers\CardController;
+  use App\Controllers\WishlistController;
   
 
 
@@ -36,21 +38,23 @@ if(isset($message)){
 
       <div class="icons"  >
          <div id="menu-btn"  class="fas fa-bars" ></div>
-         <div id="user-btn"  class="fas fa-user"></div>
-         <a href="/search" ><i class="fas fa-search"></i></a>
+         <div id="user-btn"  class="fas fa-user">user</div>
+         <a href="/search" ><i class="fas fa-search"></i>search</a>
          <?php
-            // $count_cart_items = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
-            // $count_cart_items->execute([$user_id]);
-            // $count_wishlist_items = $conn->prepare("SELECT * FROM `wishlist` WHERE user_id = ?");
-            // $count_wishlist_items->execute([$user_id]);
+
+            $count_wishlist_items = WishlistController::count_wishlist_items();
+            $count_cart_items = CardController::count_cart_items();
+
          ?>
          <a href="/wishlist" class='wishlist'>
+            Love
             <i class="fas fa-heart"></i>
-            <span></span>
+            <span><?= $count_wishlist_items; ?></span>
          </a>
          <a href="/card" class='card'>
+            Card
             <i class="fas fa-shopping-cart"></i>
-            <span></span>
+            <span><?= $count_cart_items; ?></span>
          </a>
       </div>
 

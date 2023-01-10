@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-use App\Models\ProfileModel;
+use App\Models\UserModel;
 
 class ProfileController{ 
 
@@ -10,7 +10,7 @@ class ProfileController{
         public static function getUser(){
 
             
-            $connexion = ProfileModel::getUser();
+            $connexion = UserModel::getUser();
             
 
             $_SESSION ['user_id']= $connexion['id'];

@@ -45,14 +45,15 @@ class RouteController extends \Core\Controller {
         View::render("shop.php");
     }
 
-    public function cardAction() {
-    
-        View::render("card.php");
-    }
 
     public function loginAction() {
     
         View::render("login.php");
+    }
+
+    public function cardAction() {
+    
+        View::render("card.php");
     }
     
     public function registerAction() {

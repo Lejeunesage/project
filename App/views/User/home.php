@@ -1,49 +1,8 @@
 <?php
 
-// @include 'config.php';
-use App\Controllers\Connexion;
 use App\Controllers\ProductController;
 use App\Controllers\CardController;
 
-
-
-
-
-
-
-// if(isset($_POST['add_to_wishlist'])){
-
-//    $user_id = $_SESSION['user_id'];
-//    if(!isset($user_id)){
-//          header('location:/login');
-//       }
-
-//    $pid = $_POST['pid'];
-//    $pid = htmlspecialchars($pid);
-//    $p_name = $_POST['p_name'];
-//    $p_name = htmlspecialchars($p_name);
-//    $p_price = $_POST['p_price'];
-//    $p_price = htmlspecialchars($p_price);
-//    $p_image = $_POST['p_image'];
-//    $p_image = htmlspecialchars($p_image);
-
-//    $check_wishlist_numbers = $conn->prepare("SELECT * FROM `wishlist` WHERE name = ? AND user_id = ?");
-//    $check_wishlist_numbers->execute([$p_name, $user_id]);
-
-//    $check_cart_numbers = $conn->prepare("SELECT * FROM `cart` WHERE name = ? AND user_id = ?");
-//    $check_cart_numbers->execute([$p_name, $user_id]);
-
-//    if($check_wishlist_numbers->rowCount() > 0){
-//       $message[] = "Déjà ajouté à la liste d'envie !";
-//    }elseif($check_cart_numbers->rowCount() > 0){
-//       $message[] = 'Déjà ajouté au panier !';
-//    }else{
-//       $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(user_id, pid, name, price, image) VALUES(?,?,?,?,?)");
-//       $insert_wishlist->execute([$user_id, $pid, $p_name, $p_price, $p_image]);
-//       $message[] = 'Ajouté à la liste d\'envie !';
-//    }
-
-// }
 
 
 ?>
@@ -188,9 +147,9 @@ use App\Controllers\CardController;
          foreach ($fetch_products as $key => $value) {
             
    ?>
-      <form action="Card/infoCard" class="box" method="POST">
+      <form action="card/add" class="box" method="POST">
          <div class="price"><span><?= $value['price']; ?></span>€</div>
-         <a href="/views?pid=<?= $value['id']; ?>" class="fas fa-eye"></a>
+         <a href="/views?pid=<?= $value['id']; ?>" class="fas fa-eye">eye</a>
          <img src="../ressources/uploaded_img/<?= $value['image']; ?>" alt="">
          <div class="name"><?= $value['name']; ?></div>
          <input type="hidden" name="pid" value="<?= $value['id']; ?>">
