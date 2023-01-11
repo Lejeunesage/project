@@ -47,6 +47,7 @@ class WishlistController {
 
 
     public static function count_wishlist_items(){
+        // session_start();
 
         $count_wishlist_items = WishlistModel::count_wishlist_items();
         

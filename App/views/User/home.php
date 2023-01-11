@@ -2,6 +2,7 @@
 
 use App\Controllers\ProductController;
 use App\Controllers\CardController;
+session_start();
 
 
 
@@ -143,7 +144,7 @@ use App\Controllers\CardController;
    <?php
       $fetch_products = ProductController::getProduct();
 
-      if (isset($fetch_products)) {
+      if ( isset($fetch_products) && count($fetch_products) > 0) {
          foreach ($fetch_products as $key => $value) {
             
    ?>

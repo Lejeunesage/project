@@ -51,7 +51,7 @@ class CardModel extends Connexion {
 
         $connexion = new Connexion ;
         $conn = $connexion->connect();
-        session_start();
+        // session_start();
         
         $sql = "INSERT INTO `shop_db`.cart(user_id, pid, name, price, quantity, image) VALUES(?,?,?,?,?,?)";
         $insert_cart = $conn->prepare($sql);
@@ -91,6 +91,18 @@ class CardModel extends Connexion {
 
         $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
         $delete_cart_item->execute([$user_id]);
+        
+    }
+
+    public static function update_qty ($p_qty, $cart_id){
+
+        $connexion = new Connexion ;
+        $conn = $connexion->connect();
+        
+
+        $update_qty = $conn->prepare("UPDATE `cart` SET quantity = ? WHERE id = ?");
+        $update_qty->execute([$p_qty, $cart_id]);
+       
         
     }
 
