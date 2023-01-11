@@ -53,7 +53,7 @@ class CardController {
                 // session_start();
 
                 $insert = $addToCard->insertCard($user_id, $pid, $p_name, $p_price, $p_qty, $p_image);
-                $message[] = 'Ajouté au panier !';
+                $message[] = 'Un produit ajouté au panier!';
 
                 header('location:/');
             }
@@ -145,16 +145,14 @@ class CardController {
             $delete_id = $_GET['delete'];
             $delete_one_item = new CardModel();
             $delete = $delete_one_item->delete_one_item ($delete_id);
-        //     $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE id = ?");
-        //     $delete_cart_item->execute([$delete_id]);
+        
             header('location:/card');
          }
          
          if(isset($_GET['delete_all'])){
             $delete_all_item = new CardModel();
             $delete = $delete_all_item->delete_all_item ($user_id);
-            //     $delete_cart_item = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
-            //     $delete_cart_item->execute([$user_id]);
+           
             header('location:/card');
         }
         
@@ -165,8 +163,7 @@ class CardController {
 
             $update_item = new CardModel();
             $update = $update_item->update_qty ($p_qty, $cart_id);
-            //     $update_qty = $conn->prepare("UPDATE `cart` SET quantity = ? WHERE id = ?");
-        //     $update_qty->execute([$p_qty, $cart_id]);
+          
             $message[] = 'Quantité du panier mise à jour';
          }
     }

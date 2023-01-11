@@ -1,6 +1,7 @@
 <?php
 namespace  App\Controllers;
 use  App\Models\WishlistModel;
+use  App\Models\CardModel;
 
 /**
  * 
@@ -47,7 +48,6 @@ class WishlistController {
 
 
     public static function count_wishlist_items(){
-        // session_start();
 
         $count_wishlist_items = WishlistModel::count_wishlist_items();
         
@@ -59,11 +59,6 @@ class WishlistController {
 
     }
 
-
-
-
-   
-
     public static function addToWishlist (){
 
         $addToCard = CardModel::insert_cart();
@@ -72,22 +67,88 @@ class WishlistController {
     }
 
 
-    public function returnAll() {
-       $count= count($this->ray->selectAll());
-       if($count>0) {
-        return $this->ray->selectAll();
-       } else {
-        return false;
-       }
+    public static function returnWishlist() {
+        // session_start();
+        if(isset($_SESSION['user_id'])){
+           $user_id = $_SESSION['user_id'];
+        }else{
+           $user_id = '';
+        };
+       
+        $showWishlish = WishlistModel::showWishlist($user_id);
+        return $showWishlish;
     }
 
-    public function returnDistinct() {
-       $count= count($this->ray->selectDistinct());
-       if($count>0) {
-        return $this->ray->selectDistinct();
-       } else {
-        return false;
-       }
+    public static function wishAction() {
+        session_start();
+
+        if(isset($_SESSION['user_id'])){
+           $user_id = $_SESSION['user_id'];
+        }else{
+           $user_id = '';
+        };
+        
+        
+        
+        if(isset($_POST['add_to_cart'])){
+        
+           $pid = $_POST['pid'];
+           $pid = htmlspecialchars($pid);
+           $p_name = $_POST['p_name'];
+           $p_name = htmlspecialchars($p_name);
+           $p_price = $_POST['p_price'];
+           $p_price = htmlspecialchars($p_price);
+           $p_image = $_POST['p_image'];
+           $p_image = htmlspecialchars($p_image);
+           $p_qty = $_POST['p_qty'];
+           $p_qty = htmlspecialchars($p_qty);
+        //     session_start();
+
+        //    $pid = $_SESSION['pid']  ;
+        //    $p_name = $_SESSION['p_name']   ;
+        //    $p_price = $_SESSION['p_price']   ;
+        //    $p_image = $_SESSION['_image']   ;
+        //    $p_qty= $_SESSION['p_qty']   ;
+        
+           $addToCard =  new  CardModel(); 
+
+            $check_cart_numbers = $addToCard->check_cart_numbers($p_name, $user_id);;
+        
+           if($check_cart_numbers->rowCount() > 0){
+              $message[] = 'Déja ajouter au panier!';
+           }else{
+        
+                $addToWishlist =  new  WishlistModel();
+                $check_wishlist_numbers = $addToWishlist->check_wishlist_numbers($p_name, $user_id);
+                
+        
+              if($check_wishlist_numbers->rowCount() > 0){
+                $delete_wishlist = $addToWishlist->delete_wishlist($p_name, $user_id);
+              }
+        
+              $insert = $addToCard->insertCard($user_id, $pid, $p_name, $p_price, $p_qty, $p_image);
+                $message[] = 'Un produit ajouté au panier! !';
+           }
+        
+        }
+
+        if(isset($_GET['delete'])){
+            $delete_id = $_GET['delete'];
+            $delete_one_item = new WishlistModel();
+            $delete = $delete_one_item->delete_one_item ($delete_id);
+        
+           header('location:/wishlist');
+
+         }
+         
+         if(isset($_GET['delete_all'])){
+            $delete_all_item = new WishlistModel();
+            $delete = $delete_all_item->delete_all_item ($user_id);
+           
+            header('location:/wishlist');
+        }
+        
+        
     }
 
 }

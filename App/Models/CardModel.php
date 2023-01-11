@@ -34,9 +34,6 @@ class CardModel extends Connexion {
          }else{
             $user_id = '';
          };
-
-
-   
         
         $count_cart_items = $conn->prepare("SELECT * FROM `shop_db`.cart WHERE user_id = ?");
         $count_cart_items->execute([$user_id]);

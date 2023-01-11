@@ -38,8 +38,13 @@ if(isset($message)){
 
       <div class="icons"  >
          <div id="menu-btn"  class="fas fa-bars" ></div>
-         <div id="user-btn"  class="fas fa-user">user</div>
-         <a href="/search" ><i class="fas fa-search"></i>search</a>
+         <div id="user-btn"  class="fas fa-user">
+            <!-- user -->
+
+         </div>
+         <a href="/search" ><i class="fas fa-search"></i>
+         <!-- search -->
+      </a>
          <?php
 
             $count_wishlist_items = WishlistController::count_wishlist_items();
@@ -47,12 +52,12 @@ if(isset($message)){
 
          ?>
          <a href="/wishlist" class='wishlist'>
-            Love
+            <!-- Love -->
             <i class="fas fa-heart"></i>
             <span><?= $count_wishlist_items; ?></span>
          </a>
          <a href="/card" class='card'>
-            Card
+            <!-- Card -->
             <i class="fas fa-shopping-cart"></i>
             <span><?= $count_cart_items; ?></span>
          </a>

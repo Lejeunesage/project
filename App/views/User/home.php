@@ -150,7 +150,7 @@ session_start();
    ?>
       <form action="card/add" class="box" method="POST">
          <div class="price"><span><?= $value['price']; ?></span>€</div>
-         <a href="/views?pid=<?= $value['id']; ?>" class="fas fa-eye">eye</a>
+         <a href="/views?pid=<?= $value['id']; ?>" class="fas fa-eye"></a>
          <img src="../ressources/uploaded_img/<?= $value['image']; ?>" alt="">
          <div class="name"><?= $value['name']; ?></div>
          <input type="hidden" name="pid" value="<?= $value['id']; ?>">

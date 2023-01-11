@@ -42,7 +42,7 @@ $cardAction = CardController::cardAction();
          
    ?>
    <form action="" method="POST" class="box">
-      <a href="/card?delete=<?= $fetch_cart['id']; ?>" 
+      <a href="/card?delete=<?= $value['id']; ?>" 
          onclick="return confirm('Supprimer ceci du panier ?');">
       
          <i class="fas fa-times" ></i>
